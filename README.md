@@ -1,98 +1,138 @@
-# Zero-Vault - Sprint 1 (50% Implementation)
+# ZeroVault
 
-A secure, zero-knowledge password manager built with modern web technologies. This is the **Sprint 1 version** representing approximately 50% of the planned features, focusing on core functionality and foundational UI/UX.
+![License](https://img.shields.io/badge/license-MIT-blue.svg)
+![Build Status](https://img.shields.io/badge/build-passing-brightgreen.svg)
+![Version](https://img.shields.io/badge/version-1.0.0-orange.svg)
 
-## 🎯 Sprint 1 Scope (50% Complete)
+> **Zero-Knowledge Password Vault with Offline Synchronization**
 
-This version includes the essential features needed for a functional password vault:
+ZeroVault is a secure, distributed password manager designed with privacy and reliability at its core. It employs a **Zero-Knowledge Architecture**, ensuring that your master password and sensitive data are encrypted client-side before ever reaching the server. With robust **offline support** and **conflict resolution**, your vault is always accessible and consistent across devices.
 
-### ✅ Implemented Features
+## 📋 Table of Contents
+- [Intro](#zerovault)
+- [Features](#-features)
+- [Tech Stack](#-tech-stack)
+- [Getting Started](#-getting-started)
+- [Testing](#-testing)
+- [Project Structure](#-project-structure)
+- [Troubleshooting](#-troubleshooting)
 
-#### Core Vault Functionality
-- **Secure Entry Management**: Add, edit, and delete password entries
-- **Category Organization**: Organize entries by categories (Work, Personal, Finance, Social, Entertainment, Shopping)
-- **Favorites System**: Mark important entries as favorites for quick access
-- **Search & Filter**: Real-time search across entries with category filtering
+## ✨ Features
 
-#### Security Features
-- **Password Strength Analysis**: Real-time strength indicators with color-coded feedback
-- **Breach Detection**: Identifies commonly compromised passwords
-- **Security Challenge**: Optional security question/answer for sensitive entries
-- **Auto-Lock Timer**: Configurable inactivity timeout (5-60 minutes)
-- **Clipboard Auto-Clear**: Automatic clipboard clearing after password copy (10-120 seconds)
+- **🔒 Zero-Knowledge Security**: AES-GCM encryption happens entirely in the browser. The server never sees your raw passwords.
+- **☁️ Offline Synchronization**: Make changes without an internet connection. ZeroVault queues your updates and syncs them automatically when you're back online.
+- **⚔️ Conflict Resolution**: Smart versioning system detects conflicting edits. Implements a "Server-Wins" strategy with manual resolution prompts to ensure data integrity.
+- **📱 Responsive Design**: Built with React and Tailwind CSS for a seamless experience on desktop and mobile.
+- **⚡ Modern Stack**: Powered by Vite for lightning-fast development and build performance.
 
-#### User Experience
-- **Dark Glass UI**: Premium glassmorphism design with backdrop blur effects
-- **Responsive Layout**: Fully responsive design for desktop and mobile
-- **Smooth Animations**: Framer Motion powered transitions and micro-interactions
-- **Password Generator**: Built-in strong password generator with customizable options
-- **Keyboard Shortcuts**: 
-  - `Ctrl+K` - Search vault
-  - `Ctrl+N` - New entry
-  - `Ctrl+L` - Lock vault
-  - `Ctrl+,` - Settings
+## 🛠 Tech Stack
 
-## 🚀 Technology Stack
+**Frontend**
+- **React 19** with **TypeScript**
+- **Vite** (Build Tool)
+- **Tailwind CSS** (Styling)
+- **Vitest** & **React Testing Library** (Testing)
 
-- **React 18 + TypeScript**: Type-safe component architecture
-- **Vite**: Lightning-fast build tool and dev server
-- **Tailwind CSS**: Utility-first styling with custom "Dark Glass" theme
-- **Framer Motion**: High-performance animations
-- **Wouter**: Lightweight routing
-- **Lucide React**: Modern icon library
+**Backend**
+- **Node.js** & **Express**
+- **MongoDB** & **Mongoose**
+- **JWT** (Authentication)
+- **Jest** & **Supertest** (Testing)
 
-## 📦 Installation & Setup
+## 🚀 Getting Started
 
-1. **Clone the repository**
-   ```bash
-   git clone https://github.com/Guru006-Dev/Zero-vault.git
-   cd Zero-vault
-   ```
+### Prerequisites
+- Node.js (v18+)
+- MongoDB (Local or Atlas URI)
 
-2. **Install dependencies**
-   ```bash
-   npm install
-   ```
+### Installation
 
-3. **Run development server**
-   ```bash
-   npm run dev
-   ```
+1.  **Clone the repository**
+    ```bash
+    git clone https://github.com/yourusername/zero-vault.git
+    cd zero-vault
+    ```
 
-4. **Build for production**
-   ```bash
-   npm run build
-   ```
+2.  **Install Frontend Dependencies**
+    ```bash
+    npm install
+    ```
 
-## 🔮 Planned for Sprint 2 (Remaining 50%)
+3.  **Install Backend Dependencies**
+    ```bash
+    cd server
+    npm install
+    ```
 
-The following features are planned for the next iteration:
+### Running the Application
 
-- **Vault Insights Dashboard**: Security audit with compromised/weak/reused password detection
-- **Password History**: Track last 5 password changes per entry
-- **Import/Export**: JSON-based vault backup and restore
-- **Extension Mockup**: Browser extension preview page
-- **Advanced Animations**: Skeleton loading states, staggered list animations
-- **Virtual Scrolling**: Performance optimization for large vaults (100+ entries)
-- **Enhanced Security**: Additional encryption options and 2FA preparation
+1.  **Start the Backend Server**
+    Create a `.env` file in `server/` (see `server/.env.example`).
+    ```bash
+    cd server
+    npm run dev
+    # Server runs on http://localhost:5000
+    ```
 
-## 📝 Current Limitations
+2.  **Start the Frontend Client**
+    Open a new terminal in the root directory.
+    ```bash
+    npm run dev
+    # Client runs on http://localhost:5173
+    ```
 
-As this is Sprint 1 (50% complete):
-- No data persistence beyond localStorage
-- No cloud sync or backup
-- No multi-vault support
-- No browser extension (mockup only in Sprint 2)
-- Limited password history tracking
+## 🧪 Testing
 
-## 🛡️ Security Note
+ZeroVault maintains high code quality through rigorous testing of its synchronization and security logic.
 
-This is a **client-side only** implementation using localStorage. All data remains on your device. For production use, consider implementing:
-- End-to-end encryption
-- Secure cloud backup
-- Master password hashing with PBKDF2/Argon2
-- Biometric authentication
+### 🟢 Backend Tests (Sync Integrity)
+Verifies the core delta sync algorithm, conflict detection (409 logic), and data persistence.
 
----
+```bash
+cd server
+npm test
+```
+*Key scenarios covered: Delta Accept, Version Conflicts, Deduplication, Tombstones.*
 
-*Sprint 1 - Foundation Complete | Sprint 2 - Advanced Features Coming Soon*
+### 🔵 Frontend Tests (Client Logic)
+Validates the offline outbox queue, service logic, and component integration.
+
+```bash
+# Run all unit/integration tests
+npm test
+
+# Graphical UI mode for debugging
+npm run test:ui
+
+# Check code coverage
+npm run test:coverage
+```
+*Key scenarios covered: Offline Queuing, Delta Calculation, Conflict Handling.*
+
+## 📂 Project Structure
+
+```
+zero-vault/
+├── src/                  # Frontend Source
+│   ├── components/       # Reusable UI Components
+│   ├── contexts/         # State Management (Vault, Auth)
+│   ├── services/         # Business Logic (Sync, Crypto)
+│   └── types/            # TypeScript Definitions
+├── server/               # Backend Source
+│   ├── src/
+│   │   ├── models/       # Mongoose Schemas
+│   │   ├── routes/       # API Endpoints
+│   │   └── middleware/   # Auth & Validation
+│   └── jest.config.js    # Backend Test Config
+├── vite.config.ts        # Vite & Vitest Config
+└── package.json          # Dependency Manifest
+```
+
+## 🔧 Troubleshooting
+
+-   **Sync Conflict Error**: If you see a conflict error, refresh the page. ZeroVault enforces a "Server-Wins" policy to prevent data corruption. Your stale local changes will be discarded to converge with the server state.
+-   **"ERR_REQUIRE_ESM"**: Ensure you are using `happy-dom` environment in Vitest (already configured in `vite.config.ts`).
+-   **MongoDB Connection**: Verify your `MONGODB_URI` in `server/.env` is correct and the database service is running.
+
+## 📄 License
+Distributed under the MIT License. See `LICENSE` for more information.

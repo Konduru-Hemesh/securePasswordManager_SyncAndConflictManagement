@@ -15,6 +15,8 @@ export interface VaultEntry {
     }>;
     version: number;
     updatedAt: string;
+    isDeleted?: boolean;
+    deletedAt?: string;
 }
 
 export interface VaultState {
@@ -24,6 +26,7 @@ export interface VaultState {
 }
 
 export interface SyncDelta {
+    eventId: string;
     added: VaultEntry[];
     updated: VaultEntry[];
     deleted: number[];
@@ -39,4 +42,12 @@ export interface SyncResponse {
         deleted: number[];
     };
     conflict?: boolean;
+    server_base_version?: number;
+    server_entries?: any[]; // Encrypted entries for conflict resolution
+}
+
+export interface OutboxEvent {
+    eventId: string;
+    timestamp: number;
+    delta: SyncDelta;
 }

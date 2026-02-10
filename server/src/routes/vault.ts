@@ -26,21 +26,35 @@ router.get('/', authMiddleware, async (req: AuthRequest, res: Response) => {
 router.post('/sync', authMiddleware, async (req: AuthRequest, res: Response) => {
     try {
         const userId = req.userId;
-        const { baseVersion, added, updated, deleted } = req.body;
+        const { baseVersion, added, updated, deleted, eventId } = req.body;
 
         const vault = await Vault.findOne({ userId });
         if (!vault) return res.status(404).json({ error: 'Vault not found' });
 
-        // Conflict check
+        // Conflict check: Strict Versioning
+        // If client baseVersion != server current version, it means client is outdated.
+        // We reject the sync and force client to pull first (or handle conflict).
         if (baseVersion !== vault.vaultVersion) {
-            // In a real production system, we might return a conflict state here
-            // but for this implementation, we will perform Last-Write-Wins on the server 
-            // and return the new unified state.
+            console.warn(`Conflict detected for user ${userId}: Client base ${baseVersion} vs Server ${vault.vaultVersion}`);
+            return res.status(409).json({
+                error: 'Sync Conflict',
+                server_base_version: vault.vaultVersion,
+                // In a full implementation, we might send the missing deltas here.
+                // For now, client will just see the error and stop.
+                vaultVersion: vault.vaultVersion,
+                entries: vault.encryptedEntries // Send current state so client might manually resolve or re-base
+            });
         }
+
+        // Idempotency Check (Optional but good): 
+        // We could store applied eventIds. For now, since we check baseVersion strictly, 
+        // passing the same eventId with same baseVersion twice matches logic, but we increment version.
+        // So second attempt fails conflict check. Perfect.
 
         let currentEntries = [...vault.encryptedEntries];
 
-        // Apply Deletions
+        // Apply Deletions (Legacy/Physical)
+        // If client sends IDs in 'deleted', we physically remove them.
         if (deleted && deleted.length > 0) {
             currentEntries = currentEntries.filter(e => !deleted.includes(e.id));
         }
@@ -54,21 +68,26 @@ router.post('/sync', authMiddleware, async (req: AuthRequest, res: Response) => 
             });
         }
 
-        // Apply Updates (Last-Write-Wins)
+        // Apply Updates (including Tombstones)
         if (updated && updated.length > 0) {
             updated.forEach((update: any) => {
                 const index = currentEntries.findIndex(e => e.id === update.id);
                 if (index !== -1) {
                     const existing = currentEntries[index];
                     // Server-side LWW check
-                    if (new Date(update.updatedAt) > new Date(existing.updatedAt)) {
-                        currentEntries[index] = {
-                            ...update,
-                            // Preserve history if present
-                            conflictHistory: update.conflictHistory || existing.conflictHistory
-                        };
-                    }
+                    // If strict versioning is on, we trust the client's update is based on latest.
+                    // But we still check timestamps for sanity or sub-resource conflicts?
+                    // Actually, if version matches, client knows checking against latest.
+                    // So we overwrite.
+
+                    // We merge, preserving sensitive server-side fields if any (none really)
+                    currentEntries[index] = {
+                        ...update, // This includes isDeleted: true if it's a tombstone
+                        // Preserve history if present and not in update
+                        conflictHistory: update.conflictHistory || existing.conflictHistory
+                    };
                 } else {
+                    // Update for unknown ID? treat as add?
                     currentEntries.push(update);
                 }
             });
@@ -82,6 +101,7 @@ router.post('/sync', authMiddleware, async (req: AuthRequest, res: Response) => 
         await vault.save();
 
         res.json({
+            success: true,
             vaultVersion: vault.vaultVersion,
             entries: vault.encryptedEntries,
             lastSyncedAt: vault.lastSyncedAt

@@ -6,11 +6,23 @@ export const syncService = {
      * In this simple implementation, we assume the base version is what the server last saw.
      */
     calculateDelta: (localEntries: VaultEntry[], baseVersion: number): SyncDelta => {
+        // Filter changes that are newer than baseVersion
+        const changes = localEntries.filter(e => e.version > baseVersion);
+
+        // We put all changes into 'updated'. The server handles "Update for unknown ID" by adding it.
+        // This avoids issues where 'added' requires version === 1, but we are moving to monotonic versions.
+        const updated = changes; // Include tombstones (isDeleted=true)
+
+        // DELETED: For physical deletes (if we used them). We use Tombstones (in updated) which is safer.
+        // But if we wanted to support physical deletes, we'd populate this.
+        const deleted: number[] = [];
+
         return {
-            added: localEntries.filter(e => e.version === 1),
-            updated: localEntries.filter(e => e.version > 1),
-            deleted: [],
-            baseVersion: baseVersion
+            eventId: crypto.randomUUID(),
+            added: [], // Always empty, handled by updated
+            updated,
+            deleted,
+            baseVersion
         };
     },
 

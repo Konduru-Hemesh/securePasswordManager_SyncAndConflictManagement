@@ -1,7 +1,8 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { X, Eye, EyeOff, ChevronDown, Tag, Briefcase, User, DollarSign, MessageSquare, Film, ShoppingCart } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import PasswordGenerator from './PasswordGenerator';
+import { cryptoService } from '../services/crypto.service';
 
 interface VaultEntry {
     id?: number;
@@ -24,12 +25,36 @@ interface EntryModalProps {
 }
 
 export default function EntryModal({ isOpen, onClose, onSave, entry, mode }: EntryModalProps) {
-    const [formData, setFormData] = useState<VaultEntry>(
-        entry || { website: '', username: '', password: '', securityQuestion: '', securityAnswer: '', isFavorite: false }
-    );
+    const defaultState = { website: '', username: '', password: '', securityQuestion: '', securityAnswer: '', isFavorite: false };
+    const [formData, setFormData] = useState<VaultEntry>(defaultState);
     const [errors, setErrors] = useState<Partial<Record<keyof VaultEntry, string>>>({});
     const [showPassword, setShowPassword] = useState(false);
     const [isCategoryOpen, setIsCategoryOpen] = useState(false);
+
+    useEffect(() => {
+        const loadEntry = async () => {
+            if (isOpen && mode === 'edit' && entry) {
+                let decryptedPassword = entry.password;
+                try {
+                    // Attempt decrypt if it looks encrypted (simple check or try/catch)
+                    // Since we are editing, we assume it's encrypted in the vault.
+                    // But if it's already plain (e.g. from local state logic mismatch?), we might fail.
+                    // Actually, vault entries are ALWAYS encrypted in state.
+                    decryptedPassword = await cryptoService.decrypt(entry.password, 'master-key');
+                } catch (e) {
+                    console.error('Failed to decrypt password for edit', e);
+                }
+
+                setFormData({
+                    ...entry,
+                    password: decryptedPassword
+                });
+            } else if (isOpen && mode === 'add') {
+                setFormData(defaultState);
+            }
+        };
+        loadEntry();
+    }, [isOpen, mode, entry]);
 
     const categories = [
         { id: 'Work', label: 'Work', icon: <Briefcase className="w-4 h-4" />, color: 'text-blue-400' },

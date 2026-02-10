@@ -1,0 +1,55 @@
+
+ RUN  v4.0.18 C:/Users/kondu/OneDrive/Desktop/B.TECH/6 SEM/Software Engineering/FInal_Project/zero-vault-sprint-1/zero-vault-sprint-1
+
+ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ» Unhandled Errors ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»
+
+Vitest caught 3 unhandled errors during the test run.
+This might cause false positive tests. Resolve unhandled errors to make sure your tests are not affected.
+
+ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ» Unhandled Error ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»
+Error: [vitest-pool]: Failed to start forks worker for test files C:/Users/kondu/OneDrive/Desktop/B.TECH/6 SEM/Software Engineering/FInal_Project/zero-vault-sprint-1/zero-vault-sprint-1/server/src/routes/vault.test.ts.
+ Γ¥» ../../../../../6%20SEM/Software%20Engineering/FInal_Project/zero-vault-sprint-1/zero-vault-sprint-1/node_modules/vitest/dist/chunks/cli-api.B7PN_QUv.js:8046:94
+ Γ¥» processTicksAndRejections node:internal/process/task_queues:95:5
+ Γ¥» Pool.schedule ../../../../../6%20SEM/Software%20Engineering/FInal_Project/zero-vault-sprint-1/zero-vault-sprint-1/node_modules/vitest/dist/chunks/cli-api.B7PN_QUv.js:8046:5
+
+Caused by: Error: require() of ES Module C:\Users\kondu\OneDrive\Desktop\B.TECH\6 SEM\Software Engineering\FInal_Project\zero-vault-sprint-1\zero-vault-sprint-1\node_modules\@exodus\bytes\encoding-lite.js from C:\Users\kondu\OneDrive\Desktop\B.TECH\6 SEM\Software Engineering\FInal_Project\zero-vault-sprint-1\zero-vault-sprint-1\node_modules\html-encoding-sniffer\lib\html-encoding-sniffer.js not supported.
+Instead change the require of encoding-lite.js in C:\Users\kondu\OneDrive\Desktop\B.TECH\6 SEM\Software Engineering\FInal_Project\zero-vault-sprint-1\zero-vault-sprint-1\node_modules\html-encoding-sniffer\lib\html-encoding-sniffer.js to a dynamic import() which is available in all CommonJS modules.
+ Γ¥» Object.<anonymous> node_modules/html-encoding-sniffer/lib/html-encoding-sniffer.js:2:41
+
+ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»
+Serialized Error: { code: 'ERR_REQUIRE_ESM' }
+
+ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ» Unhandled Error ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»
+Error: [vitest-pool]: Failed to start forks worker for test files C:/Users/kondu/OneDrive/Desktop/B.TECH/6 SEM/Software Engineering/FInal_Project/zero-vault-sprint-1/zero-vault-sprint-1/src/services/sync.service.test.ts.
+ Γ¥» ../../../../../6%20SEM/Software%20Engineering/FInal_Project/zero-vault-sprint-1/zero-vault-sprint-1/node_modules/vitest/dist/chunks/cli-api.B7PN_QUv.js:8046:94
+ Γ¥» processTicksAndRejections node:internal/process/task_queues:95:5
+ Γ¥» Pool.schedule ../../../../../6%20SEM/Software%20Engineering/FInal_Project/zero-vault-sprint-1/zero-vault-sprint-1/node_modules/vitest/dist/chunks/cli-api.B7PN_QUv.js:8046:5
+
+Caused by: Error: require() of ES Module C:\Users\kondu\OneDrive\Desktop\B.TECH\6 SEM\Software Engineering\FInal_Project\zero-vault-sprint-1\zero-vault-sprint-1\node_modules\@exodus\bytes\encoding-lite.js from C:\Users\kondu\OneDrive\Desktop\B.TECH\6 SEM\Software Engineering\FInal_Project\zero-vault-sprint-1\zero-vault-sprint-1\node_modules\html-encoding-sniffer\lib\html-encoding-sniffer.js not supported.
+Instead change the require of encoding-lite.js in C:\Users\kondu\OneDrive\Desktop\B.TECH\6 SEM\Software Engineering\FInal_Project\zero-vault-sprint-1\zero-vault-sprint-1\node_modules\html-encoding-sniffer\lib\html-encoding-sniffer.js to a dynamic import() which is available in all CommonJS modules.
+ Γ¥» Object.<anonymous> node_modules/html-encoding-sniffer/lib/html-encoding-sniffer.js:2:41
+
+ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»
+Serialized Error: { code: 'ERR_REQUIRE_ESM' }
+
+ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ» Unhandled Error ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»
+Error: [vitest-pool]: Failed to start forks worker for test files C:/Users/kondu/OneDrive/Desktop/B.TECH/6 SEM/Software Engineering/FInal_Project/zero-vault-sprint-1/zero-vault-sprint-1/src/contexts/VaultContext.test.tsx.
+ Γ¥» ../../../../../6%20SEM/Software%20Engineering/FInal_Project/zero-vault-sprint-1/zero-vault-sprint-1/node_modules/vitest/dist/chunks/cli-api.B7PN_QUv.js:8046:94
+ Γ¥» processTicksAndRejections node:internal/process/task_queues:95:5
+ Γ¥» Pool.schedule ../../../../../6%20SEM/Software%20Engineering/FInal_Project/zero-vault-sprint-1/zero-vault-sprint-1/node_modules/vitest/dist/chunks/cli-api.B7PN_QUv.js:8046:5
+
+Caused by: Error: require() of ES Module C:\Users\kondu\OneDrive\Desktop\B.TECH\6 SEM\Software Engineering\FInal_Project\zero-vault-sprint-1\zero-vault-sprint-1\node_modules\@exodus\bytes\encoding-lite.js from C:\Users\kondu\OneDrive\Desktop\B.TECH\6 SEM\Software Engineering\FInal_Project\zero-vault-sprint-1\zero-vault-sprint-1\node_modules\html-encoding-sniffer\lib\html-encoding-sniffer.js not supported.
+Instead change the require of encoding-lite.js in C:\Users\kondu\OneDrive\Desktop\B.TECH\6 SEM\Software Engineering\FInal_Project\zero-vault-sprint-1\zero-vault-sprint-1\node_modules\html-encoding-sniffer\lib\html-encoding-sniffer.js to a dynamic import() which is available in all CommonJS modules.
+ Γ¥» Object.<anonymous> node_modules/html-encoding-sniffer/lib/html-encoding-sniffer.js:2:41
+
+ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»
+Serialized Error: { code: 'ERR_REQUIRE_ESM' }
+ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»
+
+
+ Test Files  no tests
+      Tests  no tests
+     Errors  3 errors
+   Start at  12:30:05
+   Duration  882ms (transform 0ms, setup 0ms, import 0ms, tests 0ms, environment 0ms)
+
