@@ -1,6 +1,7 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { describe, it, expect } from 'vitest';
 import { syncService } from './sync.service';
-import { VaultEntry } from '../types/vault.types';
+import type { VaultEntry } from '../types/vault.types';
 
 describe('syncService', () => {
     describe('calculateDelta', () => {

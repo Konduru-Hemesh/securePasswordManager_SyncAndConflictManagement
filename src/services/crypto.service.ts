@@ -18,7 +18,7 @@ export const cryptoService = {
      * @example
      * const encrypted = await cryptoService.encrypt("mySecret", "key123");
      */
-    encrypt: async (text: string, _key: string): Promise<string> => {
+    encrypt: async (text: string): Promise<string> => {
         // Mock encryption: Base64 + prefix
         // In reality: await window.crypto.subtle.encrypt(...)
         return SECRET_PREFIX + btoa(text);
@@ -32,7 +32,7 @@ export const cryptoService = {
      * @param {string} _key - The decryption key (unused in this mock implementation).
      * @returns {Promise<string>} The decrypted plain text.
      */
-    decrypt: async (encryptedText: string, _key: string): Promise<string> => {
+    decrypt: async (encryptedText: string): Promise<string> => {
         if (!encryptedText.startsWith(SECRET_PREFIX)) return encryptedText;
         try {
             // Mock decryption: remove prefix + atob

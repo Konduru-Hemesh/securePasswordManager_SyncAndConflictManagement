@@ -1,7 +1,6 @@
-import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
-import { render, screen, waitFor } from '@testing-library/react';
+import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { render, screen, waitFor, act } from '@testing-library/react';
 import { VaultProvider, useVault } from '../contexts/VaultContext';
-import { AuthProvider } from '../contexts/AuthContext';
 import { ToastProvider } from '../contexts/ToastContext';
 import { ReactNode } from 'react';
 
@@ -29,18 +28,57 @@ vi.mock('../services/crypto.service', () => ({
     }
 }));
 
+// Mock fetch
+global.fetch = vi.fn(async (url, options) => {
+    let responseVersion = 1;
+
+    // If mocking sync response, mirror the version sent
+    if (options && options.method === 'POST' && options.body) {
+        try {
+            const body = JSON.parse(options.body as string);
+            // Find max version in update
+            if (body.updated && body.updated.length > 0) {
+                // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                const maxVer = Math.max(...body.updated.map((e: any) => e.version));
+                responseVersion = maxVer;
+            } else if (body.baseVersion) {
+                // Return at least baseVersion if no updates (though sync shouldn't invoke then)
+                responseVersion = body.baseVersion;
+            }
+        } catch (e) {
+            console.error('Mock fetch parse error', e);
+        }
+    }
+
+    return Promise.resolve({
+        ok: true,
+        status: 200,
+        json: () => Promise.resolve({
+            success: true,
+            vaultVersion: responseVersion,
+            encryptedEntries: [],
+            deltas: { added: [], updated: [], deleted: [] }
+        })
+    });
+}) as any;
+
 // Test Component to consume context
 const TestComponent = () => {
-    const { addEntry, entries, syncStatus, isOnline } = useVault();
+    const { addEntry, deleteEntry, entries, syncStatus, isOnline, vaultVersion } = useVault();
 
     return (
         <div>
             <div data-testid="sync-status">{syncStatus}</div>
+            <div data-testid="vault-version">{vaultVersion}</div>
             <div data-testid="online-status">{isOnline ? 'Online' : 'Offline'}</div>
             <div data-testid="entries-count">{entries.length}</div>
+            {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
             <button onClick={() => addEntry({ title: 'Test', username: 'user', password: 'pw' } as any)}>
                 Add Entry
             </button>
+            {entries.length > 0 && (
+                <button onClick={() => deleteEntry(entries[0].id)}>Delete First</button>
+            )}
         </div>
     );
 };
@@ -61,6 +99,47 @@ describe('VaultContext Integration', () => {
         vi.clearAllMocks();
     });
 
+    it('should add an entry successfully', async () => {
+        renderWithProviders(<TestComponent />);
+
+        // Wait for initialization
+        await waitFor(() => expect(screen.getByTestId('vault-version')).toHaveTextContent('1'), { timeout: 3000 });
+
+        const btn = screen.getByText('Add Entry');
+        await act(async () => {
+            btn.click();
+        });
+
+        await waitFor(() => {
+            expect(screen.getByTestId('entries-count')).toHaveTextContent('1');
+        });
+    });
+
+    it('should mark entry as deleted (tombstone)', async () => {
+        renderWithProviders(<TestComponent />);
+
+        // Wait for initialization
+        await waitFor(() => expect(screen.getByTestId('vault-version')).toHaveTextContent('1'), { timeout: 3000 });
+
+        // Add
+        const addBtn = screen.getByText('Add Entry');
+        await act(async () => {
+            addBtn.click();
+        });
+        await waitFor(() => expect(screen.getByTestId('entries-count')).toHaveTextContent('1'));
+
+        // Delete
+        const delBtn = screen.getByText('Delete First');
+        await act(async () => {
+            delBtn.click();
+        });
+
+        // Should return to 0 visible entries (context filters deleted)
+        await waitFor(() => {
+            expect(screen.getByTestId('entries-count')).toHaveTextContent('0');
+        });
+    });
+
     it('should queue changes to outbox when offline', async () => {
         // Mock offline
         Object.defineProperty(window.navigator, 'onLine', { value: false, configurable: true });
@@ -73,7 +152,9 @@ describe('VaultContext Integration', () => {
 
         // Add Entry
         const btn = screen.getByText('Add Entry');
-        btn.click(); // Synchronous click, but addEntry is async. Vault updates state.
+        await act(async () => {
+            btn.click();
+        });
 
         await waitFor(() => {
             expect(screen.getByTestId('entries-count')).toHaveTextContent('1');
@@ -86,7 +167,4 @@ describe('VaultContext Integration', () => {
             expect(outbox[0].delta.updated).toHaveLength(1);
         });
     });
-
-    // Note: Testing full sync loop requires mocking fetch/MSW which we can add. 
-    // For now, this validates the key requirement: Offline -> Outbox persistence.
 });

@@ -3,6 +3,7 @@ import mongoose, { Schema, Document } from 'mongoose';
 export interface IVault extends Document {
     userId: string;
     vaultVersion: number;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     encryptedEntries: any[];
     lastSyncedAt: Date;
 }

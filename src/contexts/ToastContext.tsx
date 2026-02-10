@@ -22,7 +22,7 @@ export function ToastProvider({ children }: { children: ReactNode }) {
     const [toasts, setToasts] = useState<Toast[]>([]);
 
     const showToast = (message: string, type: ToastType = 'info', duration: number = 3000) => {
-        const id = Math.random().toString(36).substring(7);
+        const id = crypto.randomUUID();
         const toast: Toast = { id, message, type, duration };
 
         setToasts(prev => [...prev, toast]);
@@ -95,6 +95,7 @@ export function ToastProvider({ children }: { children: ReactNode }) {
     );
 }
 
+// eslint-disable-next-line react-refresh/only-export-components
 export function useToast() {
     const context = useContext(ToastContext);
     if (!context) {

@@ -1,4 +1,4 @@
-import { createContext, useContext, useState, useEffect } from 'react';
+import { createContext, useContext, useState, useEffect, useCallback } from 'react';
 import type { ReactNode } from 'react';
 import { useLocation } from 'wouter';
 
@@ -14,7 +14,24 @@ const AutoLockContext = createContext<AutoLockContextType | undefined>(undefined
 export function AutoLockProvider({ children }: { children: ReactNode }) {
     const [, setLocation] = useLocation();
     const [autoLockMinutes, setAutoLockMinutes] = useState(15);
-    const [lastActivity, setLastActivity] = useState(Date.now());
+    const [lastActivity, setLastActivity] = useState(() => Date.now());
+
+    const lockVault = useCallback(() => {
+        // Clear sensitive data from memory
+        localStorage.removeItem('vaultMasterPassword');
+        // Redirect to unlock page
+        setLocation('/unlock');
+    }, [setLocation]);
+
+    const panicLock = useCallback(() => {
+        // Immediate lock with memory cleanup
+        localStorage.clear();
+        sessionStorage.clear();
+        // Clear clipboard
+        navigator.clipboard.writeText('');
+        // Redirect to landing
+        setLocation('/');
+    }, [setLocation]);
 
     // Track user activity
     useEffect(() => {
@@ -47,27 +64,7 @@ export function AutoLockProvider({ children }: { children: ReactNode }) {
         }, 10000); // Check every 10 seconds
 
         return () => clearInterval(checkInactivity);
-    }, [lastActivity, autoLockMinutes]);
-
-    const lockVault = () => {
-        // Clear sensitive data from memory
-        localStorage.removeItem('vaultMasterPassword');
-
-        // Redirect to unlock page
-        setLocation('/unlock');
-    };
-
-    const panicLock = () => {
-        // Immediate lock with memory cleanup
-        localStorage.clear();
-        sessionStorage.clear();
-
-        // Clear clipboard
-        navigator.clipboard.writeText('');
-
-        // Redirect to landing
-        setLocation('/');
-    };
+    }, [lastActivity, autoLockMinutes, lockVault]);
 
     return (
         <AutoLockContext.Provider value={{ lockVault, panicLock, autoLockMinutes, setAutoLockMinutes }}>
@@ -76,6 +73,7 @@ export function AutoLockProvider({ children }: { children: ReactNode }) {
     );
 }
 
+// eslint-disable-next-line react-refresh/only-export-components
 export function useAutoLock() {
     const context = useContext(AutoLockContext);
     if (!context) {

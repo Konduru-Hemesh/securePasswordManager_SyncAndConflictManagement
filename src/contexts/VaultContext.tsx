@@ -223,6 +223,7 @@ export const VaultProvider: React.FC<{ children: React.ReactNode }> = ({ childre
         }
     }, [entries, vaultVersion, serverVersion, userId]);
 
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const addEntry = useCallback(async (entryData: any) => {
         const newEntry: VaultEntry = {
             ...entryData,
@@ -234,7 +235,7 @@ export const VaultProvider: React.FC<{ children: React.ReactNode }> = ({ childre
             isDeleted: false
         };
 
-        newEntry.password = await cryptoService.encrypt(newEntry.password, 'master-key');
+        newEntry.password = await cryptoService.encrypt(newEntry.password);
 
         setEntries(prev => [...prev, newEntry]);
         setVaultVersion(Math.max(vaultVersion, serverVersion) + 1);
@@ -243,11 +244,11 @@ export const VaultProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     }, [showToast, vaultVersion, serverVersion]);
 
     const updateEntry = useCallback(async (id: number, entryData: Partial<VaultEntry>) => {
-        let finalEntryData = { ...entryData };
+        const finalEntryData = { ...entryData };
         const existing = entries.find(e => e.id === id);
 
         if (existing && entryData.password && entryData.password !== existing.password) {
-            finalEntryData.password = await cryptoService.encrypt(entryData.password, 'master-key');
+            finalEntryData.password = await cryptoService.encrypt(entryData.password);
         }
 
         setEntries(prev => prev.map(e => {
@@ -351,6 +352,7 @@ export const VaultProvider: React.FC<{ children: React.ReactNode }> = ({ childre
                 console.error('Sync processing error', error);
                 if (mounted) setSyncError(true);
             } finally {
+                // If we unmount, we can't update state, but usually effect cleanup handles 'mounted'
                 if (mounted) setIsSyncing(false);
             }
         };
@@ -358,6 +360,8 @@ export const VaultProvider: React.FC<{ children: React.ReactNode }> = ({ childre
         if (isOnline && outbox.length > 0 && !isSyncing) {
             process();
         }
+
+        return () => { mounted = false; };
     }, [outbox, isOnline, syncConflict, token, userId, showToast, retryTrigger]); // Added retryTrigger
 
     return (
@@ -379,6 +383,7 @@ export const VaultProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     );
 };
 
+// eslint-disable-next-line react-refresh/only-export-components
 export const useVault = () => {
     const context = useContext(VaultContext);
     if (!context) throw new Error('useVault must be used within a VaultProvider');

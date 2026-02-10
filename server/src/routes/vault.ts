@@ -1,4 +1,4 @@
-import express, { Request, Response } from 'express';
+import express, { Response } from 'express';
 import Vault from '../models/Vault';
 import { authMiddleware, AuthRequest } from '../middleware/auth';
 
@@ -17,7 +17,7 @@ router.get('/', authMiddleware, async (req: AuthRequest, res: Response) => {
         }
 
         res.json(vault);
-    } catch (error) {
+    } catch {
         res.status(500).json({ error: 'Server error' });
     }
 });
@@ -26,7 +26,7 @@ router.get('/', authMiddleware, async (req: AuthRequest, res: Response) => {
 router.post('/sync', authMiddleware, async (req: AuthRequest, res: Response) => {
     try {
         const userId = req.userId;
-        const { baseVersion, added, updated, deleted, eventId } = req.body;
+        const { baseVersion, added, updated, deleted } = req.body;
 
         const vault = await Vault.findOne({ userId });
         if (!vault) return res.status(404).json({ error: 'Vault not found' });
@@ -61,6 +61,7 @@ router.post('/sync', authMiddleware, async (req: AuthRequest, res: Response) => 
 
         // Apply Additions
         if (added && added.length > 0) {
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
             added.forEach((newEntry: any) => {
                 if (!currentEntries.find(e => e.id === newEntry.id)) {
                     currentEntries.push(newEntry);
@@ -70,6 +71,7 @@ router.post('/sync', authMiddleware, async (req: AuthRequest, res: Response) => 
 
         // Apply Updates (including Tombstones)
         if (updated && updated.length > 0) {
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
             updated.forEach((update: any) => {
                 const index = currentEntries.findIndex(e => e.id === update.id);
                 if (index !== -1) {

@@ -34,7 +34,7 @@ export default function Unlock() {
                     setLocation('/dashboard');
                 }, 1000);
             }
-        } catch (err) {
+        } catch {
             // Error handled by AuthContext
         } finally {
             setLoading(false);

@@ -5,6 +5,10 @@ interface PasswordGeneratorProps {
     onGenerate?: (password: string) => void;
 }
 
+import { generatePassword as generatePwd } from '../utils/passwordGenerator';
+
+
+
 export default function PasswordGenerator({ onGenerate }: PasswordGeneratorProps) {
     const [length, setLength] = useState(16);
     const [includeUppercase, setIncludeUppercase] = useState(true);
@@ -14,24 +18,15 @@ export default function PasswordGenerator({ onGenerate }: PasswordGeneratorProps
     const [generatedPassword, setGeneratedPassword] = useState('');
     const [copied, setCopied] = useState(false);
 
+    // ... inside component
     const generatePassword = () => {
-        let charset = '';
-        if (includeUppercase) charset += 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
-        if (includeLowercase) charset += 'abcdefghijklmnopqrstuvwxyz';
-        if (includeNumbers) charset += '0123456789';
-        if (includeSymbols) charset += '!@#$%^&*()_+-=[]{}|;:,.<>?';
-
-        if (charset === '') {
-            charset = 'abcdefghijklmnopqrstuvwxyz'; // Fallback
-        }
-
-        let password = '';
-        const array = new Uint8Array(length);
-        crypto.getRandomValues(array);
-
-        for (let i = 0; i < length; i++) {
-            password += charset[array[i] % charset.length];
-        }
+        const password = generatePwd(
+            length,
+            includeUppercase,
+            includeLowercase,
+            includeNumbers,
+            includeSymbols
+        );
 
         setGeneratedPassword(password);
         if (onGenerate) {

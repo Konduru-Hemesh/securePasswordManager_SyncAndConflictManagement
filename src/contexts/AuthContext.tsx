@@ -34,7 +34,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
                         isAuthenticated: true,
                         isLoading: false,
                     });
-                } catch (e) {
+                } catch {
                     localStorage.removeItem('vault_token');
                     localStorage.removeItem('vault_user');
                     setState(prev => ({ ...prev, isLoading: false, token: null, isAuthenticated: false }));
@@ -74,8 +74,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
             });
 
             showToast('Login successful', 'success');
-        } catch (error: any) {
-            showToast(error.message, 'error');
+        } catch (error: unknown) {
+            const msg = error instanceof Error ? error.message : 'Login failed';
+            showToast(msg, 'error');
             throw error;
         }
     };
@@ -107,8 +108,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
             });
 
             showToast('Registration successful', 'success');
-        } catch (error: any) {
-            showToast(error.message, 'error');
+        } catch (error: unknown) {
+            const msg = error instanceof Error ? error.message : 'Registration failed';
+            showToast(msg, 'error');
             throw error;
         }
     };
@@ -133,6 +135,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     );
 };
 
+// eslint-disable-next-line react-refresh/only-export-components
 export const useAuth = () => {
     const context = useContext(AuthContext);
     if (!context) throw new Error('useAuth must be used within an AuthProvider');

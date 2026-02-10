@@ -68,7 +68,7 @@ export default function Dashboard() {
             return;
         }
 
-        const pass = await cryptoService.decrypt(encryptedPass, 'master-key');
+        const pass = await cryptoService.decrypt(encryptedPass);
         executeCopy(id, pass);
     };
 
@@ -88,7 +88,7 @@ export default function Dashboard() {
         if (!entry) return;
 
         if (securityChallenge.input.toLowerCase().trim() === entry.securityAnswer?.toLowerCase().trim()) {
-            const pass = await cryptoService.decrypt(entry.password, 'master-key');
+            const pass = await cryptoService.decrypt(entry.password);
             executeCopy(entry.id, pass);
             setSecurityChallenge(prev => ({ ...prev, isOpen: false }));
         } else {
@@ -104,7 +104,7 @@ export default function Dashboard() {
             return;
         }
 
-        const pass = await cryptoService.decrypt(encryptedPass, 'master-key');
+        const pass = await cryptoService.decrypt(encryptedPass);
         setRevealedIds(prev => ({ ...prev, [id]: pass }));
         setTimeout(() => {
             setRevealedIds(prev => {
@@ -134,6 +134,7 @@ export default function Dashboard() {
         setIsModalOpen(true);
     };
 
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const handleSaveEntry = async (entryData: any) => {
         if (modalMode === 'edit' && editingEntry) {
             await updateEntry(editingEntry.id, entryData);
@@ -185,7 +186,7 @@ export default function Dashboard() {
                 } else {
                     showToast('Invalid vault file format', 'error');
                 }
-            } catch (error) {
+            } catch {
                 showToast('Failed to import vault', 'error');
             }
         };

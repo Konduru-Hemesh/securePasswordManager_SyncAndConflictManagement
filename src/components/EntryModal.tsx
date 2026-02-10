@@ -40,7 +40,7 @@ export default function EntryModal({ isOpen, onClose, onSave, entry, mode }: Ent
                     // Since we are editing, we assume it's encrypted in the vault.
                     // But if it's already plain (e.g. from local state logic mismatch?), we might fail.
                     // Actually, vault entries are ALWAYS encrypted in state.
-                    decryptedPassword = await cryptoService.decrypt(entry.password, 'master-key');
+                    decryptedPassword = await cryptoService.decrypt(entry.password);
                 } catch (e) {
                     console.error('Failed to decrypt password for edit', e);
                 }

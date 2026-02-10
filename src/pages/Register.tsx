@@ -48,8 +48,8 @@ export default function Register() {
             try {
                 await register(email, masterPassword, name);
                 setLocation('/dashboard');
-            } catch (err) {
-                // Error is handled by showToast in AuthContext
+            } catch {
+                // Error handled by AuthContext
             } finally {
                 setLoading(false);
             }

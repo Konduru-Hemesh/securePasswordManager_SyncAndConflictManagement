@@ -43,11 +43,13 @@ export interface SyncResponse {
     };
     conflict?: boolean;
     server_base_version?: number;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     server_entries?: any[]; // Encrypted entries for conflict resolution
 }
 
 export interface OutboxEvent {
     eventId: string;
     timestamp: number;
-    delta: SyncDelta;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    delta: any;
 }

@@ -61,8 +61,8 @@ export default function ProfileModal({ isOpen, onClose }: ProfileModalProps) {
             showToast('Profile updated', 'success');
             onClose();
             window.location.reload(); // Refresh to update AuthContext (simple way)
-        } catch (err) {
-            showToast('Update failed', 'error');
+        } catch {
+            showToast('Failed to update profile', 'error');
         }
     };
 

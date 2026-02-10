@@ -10,6 +10,7 @@ interface ClipboardContextType {
     };
 }
 
+// eslint-disable-next-line react-refresh/only-export-components
 export const ClipboardContext = createContext<ClipboardContextType | undefined>(undefined);
 
 export function ClipboardProvider({ children }: { children: ReactNode }) {
@@ -18,17 +19,20 @@ export function ClipboardProvider({ children }: { children: ReactNode }) {
     const [copiedId, setCopiedId] = useState<number | null>(null);
 
     useEffect(() => {
-        let interval: ReturnType<typeof setInterval>;
-        if (hasCopied && timeLeft > 0) {
-            interval = setInterval(() => {
-                setTimeLeft((prev) => prev - 1);
+        if (timeLeft > 0) {
+            const interval = setInterval(() => {
+                setTimeLeft((prev) => {
+                    if (prev <= 1) {
+                        setHasCopied(false);
+                        setCopiedId(null);
+                        return 0;
+                    }
+                    return prev - 1;
+                });
             }, 1000);
-        } else if (timeLeft === 0) {
-            setHasCopied(false);
-            setCopiedId(null);
+            return () => clearInterval(interval);
         }
-        return () => clearInterval(interval);
-    }, [hasCopied, timeLeft]);
+    }, [timeLeft]);
 
     const copyToClipboard = async (text: string) => {
         try {
@@ -50,6 +54,7 @@ export function ClipboardProvider({ children }: { children: ReactNode }) {
     );
 }
 
+// eslint-disable-next-line react-refresh/only-export-components
 export function useClipboard() {
     const context = useContext(ClipboardContext);
     if (context === undefined) {

@@ -1,6 +1,5 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { Shield, AlertTriangle, CheckCircle, ArrowRight, RefreshCw, Key } from 'lucide-react';
-import { motion } from 'framer-motion';
 import { calculatePasswordStrength, isCommonPassword } from '../utils/passwordStrength';
 import { useLocation } from 'wouter';
 
@@ -13,14 +12,10 @@ interface VaultEntry {
 
 export default function Insights() {
     const [, setLocation] = useLocation();
-    const [entries, setEntries] = useState<VaultEntry[]>([]);
-
-    useEffect(() => {
+    const [entries] = useState<VaultEntry[]>(() => {
         const saved = localStorage.getItem('vaultEntries');
-        if (saved) {
-            setEntries(JSON.parse(saved));
-        }
-    }, []);
+        return saved ? JSON.parse(saved) : [];
+    });
 
     // Analysis Logic
     const weakPasswords = entries.filter(e => calculatePasswordStrength(e.password).score < 3);

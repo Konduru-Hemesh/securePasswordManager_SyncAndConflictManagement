@@ -1,0 +1,185 @@
+
+> zero-vault@0.0.0 lint
+> eslint .
+
+
+C:\Users\kondu\OneDrive\Desktop\B.TECH\6 SEM\Software Engineering\FInal_Project\zero-vault-sprint-1\zero-vault-sprint-1\server\src\middleware\auth.ts
+  21:14  error  'error' is defined but never used  @typescript-eslint/no-unused-vars
+
+C:\Users\kondu\OneDrive\Desktop\B.TECH\6 SEM\Software Engineering\FInal_Project\zero-vault-sprint-1\zero-vault-sprint-1\server\src\models\Vault.ts
+  6:23  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+C:\Users\kondu\OneDrive\Desktop\B.TECH\6 SEM\Software Engineering\FInal_Project\zero-vault-sprint-1\zero-vault-sprint-1\server\src\routes\auth.ts
+   85:14  error  'error' is defined but never used  @typescript-eslint/no-unused-vars
+  103:14  error  'error' is defined but never used  @typescript-eslint/no-unused-vars
+
+C:\Users\kondu\OneDrive\Desktop\B.TECH\6 SEM\Software Engineering\FInal_Project\zero-vault-sprint-1\zero-vault-sprint-1\server\src\routes\vault.ts
+   1:19  error  'Request' is defined but never used           @typescript-eslint/no-unused-vars
+  20:14  error  'error' is defined but never used             @typescript-eslint/no-unused-vars
+  29:55  error  'eventId' is assigned a value but never used  @typescript-eslint/no-unused-vars
+  64:38  error  Unexpected any. Specify a different type      @typescript-eslint/no-explicit-any
+  73:38  error  Unexpected any. Specify a different type      @typescript-eslint/no-explicit-any
+
+C:\Users\kondu\OneDrive\Desktop\B.TECH\6 SEM\Software Engineering\FInal_Project\zero-vault-sprint-1\zero-vault-sprint-1\src\components\EntryModal.tsx
+  57:8  warning  React Hook useEffect has a missing dependency: 'defaultState'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+
+C:\Users\kondu\OneDrive\Desktop\B.TECH\6 SEM\Software Engineering\FInal_Project\zero-vault-sprint-1\zero-vault-sprint-1\src\components\ProfileModal.tsx
+  64:18  error  'err' is defined but never used  @typescript-eslint/no-unused-vars
+
+C:\Users\kondu\OneDrive\Desktop\B.TECH\6 SEM\Software Engineering\FInal_Project\zero-vault-sprint-1\zero-vault-sprint-1\src\contexts\AuthContext.tsx
+   37:26  error  'e' is defined but never used                                                                                                   @typescript-eslint/no-unused-vars
+   77:25  error  Unexpected any. Specify a different type                                                                                        @typescript-eslint/no-explicit-any
+  110:25  error  Unexpected any. Specify a different type                                                                                        @typescript-eslint/no-explicit-any
+  136:14  error  Fast refresh only works when a file only exports components. Use a new file to share constants or functions between components  react-refresh/only-export-components
+
+C:\Users\kondu\OneDrive\Desktop\B.TECH\6 SEM\Software Engineering\FInal_Project\zero-vault-sprint-1\zero-vault-sprint-1\src\contexts\AutoLockContext.tsx
+  17:54  error    Error: Cannot call impure function during render
+
+`Date.now` is an impure function. Calling an impure function can produce unstable results that update unpredictably when the component happens to re-render. (https://react.dev/reference/rules/components-and-hooks-must-be-pure#components-and-hooks-must-be-idempotent).
+
+C:\Users\kondu\OneDrive\Desktop\B.TECH\6 SEM\Software Engineering\FInal_Project\zero-vault-sprint-1\zero-vault-sprint-1\src\contexts\AutoLockContext.tsx:17:54
+  15 |     const [, setLocation] = useLocation();
+  16 |     const [autoLockMinutes, setAutoLockMinutes] = useState(15);
+> 17 |     const [lastActivity, setLastActivity] = useState(Date.now());
+     |                                                      ^^^^^^^^^^ Cannot call impure function
+  18 |
+  19 |     // Track user activity
+  20 |     useEffect(() => {                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     react-hooks/purity
+  45:17  error    Error: Cannot access variable before it is declared
+
+`lockVault` is accessed before it is declared, which prevents the earlier access from updating when this value changes over time.
+
+C:\Users\kondu\OneDrive\Desktop\B.TECH\6 SEM\Software Engineering\FInal_Project\zero-vault-sprint-1\zero-vault-sprint-1\src\contexts\AutoLockContext.tsx:45:17
+  43 |
+  44 |             if (inactiveTime >= autoLockMinutes) {
+> 45 |                 lockVault();
+     |                 ^^^^^^^^^ `lockVault` accessed before it is declared
+  46 |             }
+  47 |         }, 10000); // Check every 10 seconds
+  48 |
+
+C:\Users\kondu\OneDrive\Desktop\B.TECH\6 SEM\Software Engineering\FInal_Project\zero-vault-sprint-1\zero-vault-sprint-1\src\contexts\AutoLockContext.tsx:52:5
+  50 |     }, [lastActivity, autoLockMinutes]);
+  51 |
+> 52 |     const lockVault = () => {
+     |     ^^^^^^^^^^^^^^^^^^^^^^^^^
+> 53 |         // Clear sensitive data from memory
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 54 |         localStorage.removeItem('vaultMasterPassword');
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 55 |
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 56 |         // Redirect to unlock page
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 57 |         setLocation('/unlock');
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 58 |     };
+     | ^^^^^^^ `lockVault` is declared here
+  59 |
+  60 |     const panicLock = () => {
+  61 |         // Immediate lock with memory cleanup  react-hooks/immutability
+  50:8   warning  React Hook useEffect has a missing dependency: 'lockVault'. Either include it or remove the dependency array                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 react-hooks/exhaustive-deps
+  79:17  error    Fast refresh only works when a file only exports components. Use a new file to share constants or functions between components                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               react-refresh/only-export-components
+
+C:\Users\kondu\OneDrive\Desktop\B.TECH\6 SEM\Software Engineering\FInal_Project\zero-vault-sprint-1\zero-vault-sprint-1\src\contexts\ClipboardContext.tsx
+  13:14  error  Fast refresh only works when a file only exports components. Move your React context(s) to a separate file                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          react-refresh/only-export-components
+  27:13  error  Error: Calling setState synchronously within an effect can trigger cascading renders
+
+Effects are intended to synchronize state between React and external systems such as manually updating the DOM, state management libraries, or other platform APIs. In general, the body of an effect should do one or both of the following:
+* Update external systems with the latest state from React.
+* Subscribe for updates from some external system, calling setState in a callback function when external state changes.
+
+Calling setState synchronously within an effect body causes cascading renders that can hurt performance, and is not recommended. (https://react.dev/learn/you-might-not-need-an-effect).
+
+C:\Users\kondu\OneDrive\Desktop\B.TECH\6 SEM\Software Engineering\FInal_Project\zero-vault-sprint-1\zero-vault-sprint-1\src\contexts\ClipboardContext.tsx:27:13
+  25 |             }, 1000);
+  26 |         } else if (timeLeft === 0) {
+> 27 |             setHasCopied(false);
+     |             ^^^^^^^^^^^^ Avoid calling setState() directly within an effect
+  28 |             setCopiedId(null);
+  29 |         }
+  30 |         return () => clearInterval(interval);  react-hooks/set-state-in-effect
+  53:17  error  Fast refresh only works when a file only exports components. Use a new file to share constants or functions between components                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      react-refresh/only-export-components
+
+C:\Users\kondu\OneDrive\Desktop\B.TECH\6 SEM\Software Engineering\FInal_Project\zero-vault-sprint-1\zero-vault-sprint-1\src\contexts\ThemeContext.tsx
+  43:17  error  Fast refresh only works when a file only exports components. Use a new file to share constants or functions between components  react-refresh/only-export-components
+
+C:\Users\kondu\OneDrive\Desktop\B.TECH\6 SEM\Software Engineering\FInal_Project\zero-vault-sprint-1\zero-vault-sprint-1\src\contexts\ToastContext.tsx
+  25:20  error  Error: Cannot call impure function during render
+
+`Math.random` is an impure function. Calling an impure function can produce unstable results that update unpredictably when the component happens to re-render. (https://react.dev/reference/rules/components-and-hooks-must-be-pure#components-and-hooks-must-be-idempotent).
+
+C:\Users\kondu\OneDrive\Desktop\B.TECH\6 SEM\Software Engineering\FInal_Project\zero-vault-sprint-1\zero-vault-sprint-1\src\contexts\ToastContext.tsx:25:20
+  23 |
+  24 |     const showToast = (message: string, type: ToastType = 'info', duration: number = 3000) => {
+> 25 |         const id = Math.random().toString(36).substring(7);
+     |                    ^^^^^^^^^^^^^ Cannot call impure function
+  26 |         const toast: Toast = { id, message, type, duration };
+  27 |
+  28 |         setToasts(prev => [...prev, toast]);  react-hooks/purity
+  98:17  error  Fast refresh only works when a file only exports components. Use a new file to share constants or functions between components                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      react-refresh/only-export-components
+
+C:\Users\kondu\OneDrive\Desktop\B.TECH\6 SEM\Software Engineering\FInal_Project\zero-vault-sprint-1\zero-vault-sprint-1\src\contexts\VaultContext.test.tsx
+   1:48   error  'afterEach' is defined but never used     @typescript-eslint/no-unused-vars
+   4:10   error  'AuthProvider' is defined but never used  @typescript-eslint/no-unused-vars
+  41:100  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+C:\Users\kondu\OneDrive\Desktop\B.TECH\6 SEM\Software Engineering\FInal_Project\zero-vault-sprint-1\zero-vault-sprint-1\src\contexts\VaultContext.tsx
+  124:8   warning  React Hook useEffect has a missing dependency: 'showToast'. Either include it or remove the dependency array                    react-hooks/exhaustive-deps
+  202:8   warning  React Hook useCallback has a missing dependency: 'vaultVersion'. Either include it or remove the dependency array               react-hooks/exhaustive-deps
+  226:52  error    Unexpected any. Specify a different type                                                                                        @typescript-eslint/no-explicit-any
+  246:13  error    'finalEntryData' is never reassigned. Use 'const' instead                                                                       prefer-const
+  302:13  error    'mounted' is never reassigned. Use 'const' instead                                                                              prefer-const
+  361:8   warning  React Hook useEffect has a missing dependency: 'isSyncing'. Either include it or remove the dependency array                    react-hooks/exhaustive-deps
+  382:14  error    Fast refresh only works when a file only exports components. Use a new file to share constants or functions between components  react-refresh/only-export-components
+
+C:\Users\kondu\OneDrive\Desktop\B.TECH\6 SEM\Software Engineering\FInal_Project\zero-vault-sprint-1\zero-vault-sprint-1\src\pages\Dashboard.tsx
+  137:47  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  188:22  error  'error' is defined but never used         @typescript-eslint/no-unused-vars
+
+C:\Users\kondu\OneDrive\Desktop\B.TECH\6 SEM\Software Engineering\FInal_Project\zero-vault-sprint-1\zero-vault-sprint-1\src\pages\Insights.tsx
+   3:10  error  'motion' is defined but never used                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    @typescript-eslint/no-unused-vars
+  21:13  error  Error: Calling setState synchronously within an effect can trigger cascading renders
+
+Effects are intended to synchronize state between React and external systems such as manually updating the DOM, state management libraries, or other platform APIs. In general, the body of an effect should do one or both of the following:
+* Update external systems with the latest state from React.
+* Subscribe for updates from some external system, calling setState in a callback function when external state changes.
+
+Calling setState synchronously within an effect body causes cascading renders that can hurt performance, and is not recommended. (https://react.dev/learn/you-might-not-need-an-effect).
+
+C:\Users\kondu\OneDrive\Desktop\B.TECH\6 SEM\Software Engineering\FInal_Project\zero-vault-sprint-1\zero-vault-sprint-1\src\pages\Insights.tsx:21:13
+  19 |         const saved = localStorage.getItem('vaultEntries');
+  20 |         if (saved) {
+> 21 |             setEntries(JSON.parse(saved));
+     |             ^^^^^^^^^^ Avoid calling setState() directly within an effect
+  22 |         }
+  23 |     }, []);
+  24 |  react-hooks/set-state-in-effect
+
+C:\Users\kondu\OneDrive\Desktop\B.TECH\6 SEM\Software Engineering\FInal_Project\zero-vault-sprint-1\zero-vault-sprint-1\src\pages\Register.tsx
+  51:22  error  'err' is defined but never used  @typescript-eslint/no-unused-vars
+
+C:\Users\kondu\OneDrive\Desktop\B.TECH\6 SEM\Software Engineering\FInal_Project\zero-vault-sprint-1\zero-vault-sprint-1\src\pages\Unlock.tsx
+  37:18  error  'err' is defined but never used  @typescript-eslint/no-unused-vars
+
+C:\Users\kondu\OneDrive\Desktop\B.TECH\6 SEM\Software Engineering\FInal_Project\zero-vault-sprint-1\zero-vault-sprint-1\src\services\crypto.service.ts
+  21:35  error  '_key' is defined but never used  @typescript-eslint/no-unused-vars
+  35:44  error  '_key' is defined but never used  @typescript-eslint/no-unused-vars
+
+C:\Users\kondu\OneDrive\Desktop\B.TECH\6 SEM\Software Engineering\FInal_Project\zero-vault-sprint-1\zero-vault-sprint-1\src\services\sync.service.test.ts
+   9:139  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  21:84   error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  33:84   error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  45:92   error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  49:75   error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  60:121  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  65:107  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  80:121  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  85:107  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+C:\Users\kondu\OneDrive\Desktop\B.TECH\6 SEM\Software Engineering\FInal_Project\zero-vault-sprint-1\zero-vault-sprint-1\src\types\vault.types.ts
+  46:22  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+Γ£û 53 problems (48 errors, 5 warnings)
+  2 errors and 0 warnings potentially fixable with the `--fix` option.
+
