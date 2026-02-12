@@ -23,6 +23,19 @@ const VaultContext = createContext<VaultContextType | undefined>(undefined);
 
 const API_BASE_URL = 'http://localhost:5000/api/vault';
 
+/**
+ * Provider component for the Vault Context.
+ * 
+ * Manages the state of the encrypted vault, handling:
+ * - Local storage persistence
+ * - Syncing with the backend server (Delta-based sync)
+ * - Conflict resolution (Last Writer Wins)
+ * - Offline support with an "outbox" pattern
+ * - Automatic versioning of entries
+ * 
+ * @param {object} props - Component props.
+ * @param {React.ReactNode} props.children - Child components.
+ */
 export const VaultProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
     const { showToast } = useToast();
     const { user, token } = useAuth();
@@ -92,8 +105,13 @@ export const VaultProvider: React.FC<{ children: React.ReactNode }> = ({ childre
                             }
                         }
 
-                        setEntries(data.encryptedEntries || []);
-                        setVaultVersion(data.vaultVersion || 0);
+                        if (currentOutbox.length === 0) {
+                            setEntries(data.encryptedEntries || []);
+                            setVaultVersion(data.vaultVersion || 0);
+                        } else {
+                            console.log('Outbox pending - skipping overwrite of local entries until sync completes.');
+                        }
+
                         setServerVersion(data.vaultVersion || 0);
                         setSyncError(false);
                         setSyncConflict(false);
@@ -115,7 +133,7 @@ export const VaultProvider: React.FC<{ children: React.ReactNode }> = ({ childre
                     setServerVersion(parsed.serverVersion || 0);
                     setSyncError(false);
                 } catch (e) {
-                    console.error('Failed to parse vault storage', e);
+                    console.error('Failed to parse (fallback)', e);
                 }
             }
         };
@@ -343,6 +361,10 @@ export const VaultProvider: React.FC<{ children: React.ReactNode }> = ({ childre
                     // Success - Remove from Outbox
                     setOutbox(prev => prev.filter(e => e.eventId !== event.eventId));
 
+                    if (result.entries) {
+                        setEntries(result.entries);
+                        setVaultVersion(result.vaultVersion || result.entries.length);
+                    }
                     setServerVersion(result.vaultVersion || result.entries.length);
                     setLastSynced(result.lastSyncedAt);
                     setSyncError(false);
@@ -384,6 +406,14 @@ export const VaultProvider: React.FC<{ children: React.ReactNode }> = ({ childre
 };
 
 // eslint-disable-next-line react-refresh/only-export-components
+/**
+ * Hook to access the Vault Context.
+ * 
+ * Provides access to vault items, sync status, and methods for modifying the vault.
+ * 
+ * @returns {VaultContextType} The vault context properties and methods.
+ * @throws {Error} If used outside of a VaultProvider.
+ */
 export const useVault = () => {
     const context = useContext(VaultContext);
     if (!context) throw new Error('useVault must be used within a VaultProvider');

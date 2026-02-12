@@ -7,7 +7,16 @@ import { authMiddleware, AuthRequest } from '../middleware/auth';
 const router = express.Router();
 const JWT_SECRET = process.env.JWT_SECRET || 'fallback_secret';
 
-// POST /api/auth/register
+/**
+ * POST /api/auth/register
+ * 
+ * Registers a new user with the provided email, password, and optional display name.
+ * 
+ * @param {string} req.body.email - User's email address.
+ * @param {string} req.body.password - User's password (will be hashed).
+ * @param {string} [req.body.displayName] - Optional display name.
+ * @returns {object} JSON object containing the JWT token and user details.
+ */
 router.post('/register', async (req: Request, res: Response) => {
     try {
         const { email, password, displayName } = req.body;
@@ -44,7 +53,15 @@ router.post('/register', async (req: Request, res: Response) => {
     }
 });
 
-// POST /api/auth/login
+/**
+ * POST /api/auth/login
+ * 
+ * Authenticates a user and returns a JWT token.
+ * 
+ * @param {string} req.body.email - User's email.
+ * @param {string} req.body.password - User's password.
+ * @returns {object} JSON object containing the JWT token and user details.
+ */
 router.post('/login', async (req: Request, res: Response) => {
     try {
         const { email, password } = req.body;
@@ -76,7 +93,14 @@ router.post('/login', async (req: Request, res: Response) => {
     }
 });
 
-// GET /api/auth/me
+/**
+ * GET /api/auth/me
+ * 
+ * Retrieves the currently authenticated user's profile.
+ * Protected route: Requires valid JWT token in Authorization header.
+ * 
+ * @returns {object} User profile object (excluding password).
+ */
 router.get('/me', authMiddleware, async (req: AuthRequest, res: Response) => {
     try {
         const user = await User.findById(req.userId).select('-password');

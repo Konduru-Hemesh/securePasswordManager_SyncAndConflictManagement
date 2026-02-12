@@ -12,6 +12,17 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 const API_BASE_URL = 'http://localhost:5000/api/auth';
 
+/**
+ * Provider component for the Authentication Context.
+ * 
+ * Manages the user's authentication state, including:
+ * - Storing/retrieving the JWT token from localStorage
+ * - persisting user session
+ * - Handling login and registration API calls
+ * 
+ * @param {object} props - Component props.
+ * @param {React.ReactNode} props.children - Child components.
+ */
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
     const { showToast } = useToast();
     const [state, setState] = useState<AuthState>({
@@ -136,6 +147,15 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 };
 
 // eslint-disable-next-line react-refresh/only-export-components
+/**
+ * Hook to access the Authentication Context.
+ * 
+ * Provides access to the current user, authentication status, and methods for logging in,
+ * registering, and logging out.
+ * 
+ * @returns {AuthContextType} The auth context properties and methods.
+ * @throws {Error} If used outside of an AuthProvider.
+ */
 export const useAuth = () => {
     const context = useContext(AuthContext);
     if (!context) throw new Error('useAuth must be used within an AuthProvider');

@@ -2,8 +2,12 @@ import type { VaultEntry, SyncDelta } from '../types/vault.types';
 
 export const syncService = {
     /**
-     * Calculates the delta between the local state and the base version.
-     * In this simple implementation, we assume the base version is what the server last saw.
+     * Calculates the differences (delta) between the local vault state and the server's base version.
+     * This is used to determine what changes need to be pushed to the server.
+     * 
+     * @param {VaultEntry[]} localEntries - The current array of vault entries from the local store.
+     * @param {number} baseVersion - The version number that the server is currently on (or last known).
+     * @returns {SyncDelta} An object containing added, updated, and deleted entries relative to the base version.
      */
     calculateDelta: (localEntries: VaultEntry[], baseVersion: number): SyncDelta => {
         // Filter changes that are newer than baseVersion
@@ -27,8 +31,16 @@ export const syncService = {
     },
 
     /**
-     * Resolves conflicts deterministically.
-     * Strategy: Last Writer Wins (based on updatedAt)
+     * Merges server changes into the local state and resolves conflicts.
+     * Implements a "Last Writer Wins" (LWW) strategy based on the `updatedAt` timestamp.
+     * 
+     * If a conflict occurs (both client and server modified the same entry), the version
+     * with the later timestamp wins. If the server wins, the local version is preserved
+     * in the `conflictHistory` for potential recovery.
+     * 
+     * @param {VaultEntry[]} localEntries - The current local vault entries.
+     * @param {SyncDelta} serverDeltas - The changes received from the server.
+     * @returns {VaultEntry[]} A new array of vault entries representing the resolved state.
      */
     resolveConflicts: (localEntries: VaultEntry[], serverDeltas: SyncDelta): VaultEntry[] => {
         let merged = [...localEntries];

@@ -4,7 +4,14 @@ import { authMiddleware, AuthRequest } from '../middleware/auth';
 
 const router = express.Router();
 
-// GET /api/vault - Get user's vault
+/**
+ * GET /api/vault
+ * 
+ * Retrieves the full vault for the authenticated user.
+ * If no vault exists, a new empty one is initialized.
+ * 
+ * @returns {object} The user's vault object.
+ */
 router.get('/', authMiddleware, async (req: AuthRequest, res: Response) => {
     try {
         const userId = req.userId;
@@ -22,7 +29,20 @@ router.get('/', authMiddleware, async (req: AuthRequest, res: Response) => {
     }
 });
 
-// POST /api/vault/sync - Sync deltas
+/**
+ * POST /api/vault/sync
+ * 
+ * Synchronizes client-side changes (deltas) with the server vault.
+ * Implements strict version checking to ensure data integrity.
+ * 
+ * @param {number} req.body.baseVersion - The version of the vault the client is building upon.
+ * @param {Array} [req.body.added] - List of new entries to add.
+ * @param {Array} [req.body.updated] - List of entries to update.
+ * @param {Array} [req.body.deleted] - List of entry IDs to delete.
+ * 
+ * @returns {object} object containing success status, new vault version, and current entries.
+ * @returns {409} If baseVersion does not match server version (Conflict).
+ */
 router.post('/sync', authMiddleware, async (req: AuthRequest, res: Response) => {
     try {
         const userId = req.userId;

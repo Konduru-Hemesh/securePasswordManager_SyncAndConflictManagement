@@ -6,17 +6,26 @@
 
 const SECRET_PREFIX = 'ENC:';
 
+/**
+ * Cryptographic service for handling data encryption and decryption.
+ * 
+ * IMPORTANT: This current implementation uses a mock encryption strategy (Base64 + prefix)
+ * for demonstration purposes. In a production environment, this MUST be replaced with
+ * the Web Crypto API (SubtleCrypto) using strong algorithms like AES-GCM or AES-GCM-SIV.
+ * 
+ * @namespace cryptoService
+ */
 export const cryptoService = {
     /**
-     * Encrypts a text string using a mock encryption (Base64 + prefix).
-     * In a production environment, this should be replaced with Web Crypto API.
-     *
-     * @param {string} text - The plain text to encrypt.
-     * @param {string} _key - The encryption key (unused in this mock implementation).
-     * @returns {Promise<string>} The encrypted string.
-     *
+     * Encrypts a text string using a mock encryption scheme.
+     * 
+     * @param {string} text - The plain text string to be encrypted.
+     * @param {string} [key] - Optional encryption key (not utilized in this mock implementation).
+     * @returns {Promise<string>} A promise that resolves to the encrypted string (prefixed with 'ENC:').
+     * 
      * @example
-     * const encrypted = await cryptoService.encrypt("mySecret", "key123");
+     * const encrypted = await cryptoService.encrypt("mySecretPassword");
+     * // returns "ENC:bXlTZWNyZXRQYXNzd29yZA=="
      */
     encrypt: async (text: string): Promise<string> => {
         // Mock encryption: Base64 + prefix
@@ -25,12 +34,18 @@ export const cryptoService = {
     },
 
     /**
-     * Decrypts an encrypted string.
-     * Returns the original string if decryption fails or if it's not encrypted.
-     *
-     * @param {string} encryptedText - The text to decrypt.
-     * @param {string} _key - The decryption key (unused in this mock implementation).
-     * @returns {Promise<string>} The decrypted plain text.
+     * Decrypts an encrypted string back to plain text.
+     * 
+     * Checks for the presence of the specific prefix. If the prefix is missing or
+     * decryption fails, the original string is returned.
+     * 
+     * @param {string} encryptedText - The encrypted string to decrypt.
+     * @param {string} [key] - Optional decryption key (not utilized in this mock implementation).
+     * @returns {Promise<string>} A promise that resolves to the decrypted plain text string.
+     * 
+     * @example
+     * const plain = await cryptoService.decrypt("ENC:bXlTZWNyZXRQYXNzd29yZA==");
+     * // returns "mySecretPassword"
      */
     decrypt: async (encryptedText: string): Promise<string> => {
         if (!encryptedText.startsWith(SECRET_PREFIX)) return encryptedText;
