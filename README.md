@@ -11,11 +11,13 @@ ZeroVault is a secure, distributed password manager designed with privacy and re
 ## 📋 Table of Contents
 - [Intro](#zerovault)
 - [Features](#-features)
+- [Architecture](#-architecture)
 - [Tech Stack](#-tech-stack)
 - [Getting Started](#-getting-started)
 - [Testing](#-testing)
 - [Project Structure](#-project-structure)
 - [Troubleshooting](#-troubleshooting)
+
 
 ## ✨ Features
 
@@ -24,6 +26,33 @@ ZeroVault is a secure, distributed password manager designed with privacy and re
 - **⚔️ Conflict Resolution**: Smart versioning system detects conflicting edits. Implements a "Server-Wins" strategy with manual resolution prompts to ensure data integrity.
 - **📱 Responsive Design**: Built with React and Tailwind CSS for a seamless experience on desktop and mobile.
 - **⚡ Modern Stack**: Powered by Vite for lightning-fast development and build performance.
+
+## 🏗️ Architecture
+
+The following diagram illustrates the synchronization and conflict resolution flow when the client reconnects to the network:
+
+```mermaid
+sequenceDiagram
+    participant Client
+    participant SyncEngine
+    participant ConflictEngine
+    participant Backend
+
+    Client->>SyncEngine: Detect Network Restore
+    SyncEngine->>Backend: Request Server Version
+    Backend-->>SyncEngine: Server Version
+
+    alt Version Mismatch
+        SyncEngine->>Backend: Download Encrypted Deltas
+        SyncEngine->>SyncEngine: Decrypt + Merge
+        SyncEngine->>ConflictEngine: LWW / Tombstone Logic
+        ConflictEngine-->>SyncEngine: Resolved State
+        SyncEngine->>Backend: Upload Encrypted Merged State
+    end
+
+    SyncEngine->>Client: Update State Hash
+```
+
 
 ## 🛠 Tech Stack
 
@@ -135,4 +164,15 @@ zero-vault/
 -   **MongoDB Connection**: Verify your `MONGODB_URI` in `server/.env` is correct and the database service is running.
 
 ## 📄 License
+
 Distributed under the MIT License. See `LICENSE` for more information.
+
+## 🤝 Contributing
+
+Contributions are what make the open source community such an amazing place to be learn, inspire, and create. Any contributions you make are **greatly appreciated**.
+
+1. Fork the Project
+2. Create your Feature Branch (`git checkout -b feature/AmazingFeature`)
+3. Commit your Changes (`git commit -m 'Add some AmazingFeature'`)
+4. Push to the Branch (`git push origin feature/AmazingFeature`)
+5. Open a Pull Request
