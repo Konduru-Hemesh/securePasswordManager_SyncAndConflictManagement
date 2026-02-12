@@ -92,8 +92,13 @@ export const VaultProvider: React.FC<{ children: React.ReactNode }> = ({ childre
                             }
                         }
 
-                        setEntries(data.encryptedEntries || []);
-                        setVaultVersion(data.vaultVersion || 0);
+                        if (currentOutbox.length === 0) {
+                            setEntries(data.encryptedEntries || []);
+                            setVaultVersion(data.vaultVersion || 0);
+                        } else {
+                            console.log('Outbox pending - skipping overwrite of local entries until sync completes.');
+                        }
+
                         setServerVersion(data.vaultVersion || 0);
                         setSyncError(false);
                         setSyncConflict(false);
@@ -115,7 +120,7 @@ export const VaultProvider: React.FC<{ children: React.ReactNode }> = ({ childre
                     setServerVersion(parsed.serverVersion || 0);
                     setSyncError(false);
                 } catch (e) {
-                    console.error('Failed to parse vault storage', e);
+                    console.error('Failed to parse (fallback)', e);
                 }
             }
         };
@@ -343,6 +348,10 @@ export const VaultProvider: React.FC<{ children: React.ReactNode }> = ({ childre
                     // Success - Remove from Outbox
                     setOutbox(prev => prev.filter(e => e.eventId !== event.eventId));
 
+                    if (result.entries) {
+                        setEntries(result.entries);
+                        setVaultVersion(result.vaultVersion || result.entries.length);
+                    }
                     setServerVersion(result.vaultVersion || result.entries.length);
                     setLastSynced(result.lastSyncedAt);
                     setSyncError(false);

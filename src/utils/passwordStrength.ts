@@ -37,7 +37,7 @@ export function isCommonPassword(password: string): boolean {
         'password', '123456', '12345678', 'qwerty', 'abc123',
         'monkey', '1234567', 'letmein', 'trustno1', 'dragon',
         'baseball', 'iloveyou', 'master', 'sunshine', 'ashley',
-        'bailey', 'passw0rd', 'shadow', '123123', '654321',
+        'bailey', 'passw0rd', 'shadow', '123123', '654321', 'password123', 'admin'
     ];
 
     if (!password) return false;
